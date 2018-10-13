@@ -40,6 +40,7 @@ public void capture () {
   this.upload(get());
 }
 
+
 /**
  * Capture and upload the window then open in default browser.
  * @param x x-coordinate of the start pixel
@@ -68,20 +69,18 @@ public void upload (PImage img) {
 
   String image_url = "data:image/png;base64," + Base64.getEncoder().encodeToString(out.toByteArray());
 
-  //PostRequest post = new PostRequest("https://upload.gyazo.com/api/upload/easy_auth");
-
   HashMap<String, String> param = new HashMap<String, String>();
   param.put("client_id", CLIENT_ID);
   param.put("image_url", image_url);
   param.put("referer_url", "https://processing.org");
-  String response = postRequest("https://upload.gyazo.com/api/upload/easy_auth", param);
 
+  String response = postRequest("https://upload.gyazo.com/api/upload/easy_auth", param);
+  if (response == "") return;
 
   Pattern pattern = Pattern.compile("https://gyazo\\.com/api/upload/[a-z0-9]*");
-  //Matcher matcher = pattern.matcher(post.getContent());
   Matcher matcher = pattern.matcher(response);
   if (!matcher.find()) {
-    System.err.println("HTTP Response Exception: ");
+    System.err.println("HTTP Response Exception: " + response);
     return;
   }
   String url = matcher.group(0);
@@ -110,7 +109,6 @@ private String postRequest(String api, HashMap<String, String> data) {
 
   try {
     URL url = new URL(api);
-
     HttpURLConnection con = (HttpURLConnection)url.openConnection();
     con.setRequestMethod("POST");
     con.setInstanceFollowRedirects(false);
@@ -138,21 +136,19 @@ private String postRequest(String api, HashMap<String, String> data) {
 
     StringBuffer result = new StringBuffer();
     final int status = con.getResponseCode();
-    if (status == HttpURLConnection.HTTP_OK) {
-      final InputStream in = con.getInputStream();
-      final InputStreamReader inReader = new InputStreamReader(in, "UTF-8");
-      final BufferedReader bufReader = new BufferedReader(inReader);
-      String line = null;
-      while ((line = bufReader.readLine()) != null) {
-        result.append(line);
-      }
-      bufReader.close();
-      inReader.close();
-      in.close();
 
-      return result.toString();
-    }
-    return "";
+    if (status != HttpURLConnection.HTTP_OK) return "";
+
+    final InputStream in = con.getInputStream();
+    final InputStreamReader inReader = new InputStreamReader(in, "UTF-8");
+    final BufferedReader bufReader = new BufferedReader(inReader);
+    String line = null;
+    while ((line = bufReader.readLine()) != null) result.append(line);
+    bufReader.close();
+    inReader.close();
+    in.close();
+
+    return result.toString();
   }
   catch(Exception e) {
     e.printStackTrace();
