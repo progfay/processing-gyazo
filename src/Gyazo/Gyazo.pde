@@ -51,6 +51,7 @@ private final String CLIENT_ID = "fbabf8fca3536ae735c4a42eaa75065945f22d20b80d52
 
 /**
  * Capture and upload the window then open in default browser.
+ * @return Gyazo URL on success, or empty String if upload failed.
  */
 public String capture () {
   return this.upload(get());
@@ -63,6 +64,7 @@ public String capture () {
  * @param y y-coordinate of the start pixel
  * @param w width of pixel rectangle to get
  * @param h height of pixel rectangle to get
+ * @return Gyazo URL on success, or empty String if upload failed.
  */
 public String capture (int x, int y, int w, int h) {
   return this.upload(get(x, y, w, h));
@@ -72,6 +74,7 @@ public String capture (int x, int y, int w, int h) {
 /**
  * Upload image for Gyazo.
  * @param img image
+ * @return Gyazo URL on success, or empty String if upload failed.
  */
 public String upload (PImage img) {
   ByteArrayOutputStream out = new ByteArrayOutputStream();
