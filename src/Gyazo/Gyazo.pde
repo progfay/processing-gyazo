@@ -35,9 +35,10 @@ private final String CLIENT_ID = "fbabf8fca3536ae735c4a42eaa75065945f22d20b80d52
 
 /**
  * Capture and upload the window then open in default browser.
+ * @return Gyazo URL on success, or empty String if upload failed.
  */
-public void capture () {
-  this.upload(get());
+public String capture () {
+  return this.upload(get());
 }
 
 
@@ -47,24 +48,26 @@ public void capture () {
  * @param y y-coordinate of the start pixel
  * @param w width of pixel rectangle to get
  * @param h height of pixel rectangle to get
+ * @return Gyazo URL on success, or empty String if upload failed.
  */
-public void capture (int x, int y, int w, int h) {
-  this.upload(get(x, y, w, h));
+public String capture (int x, int y, int w, int h) {
+  return this.upload(get(x, y, w, h));
 }
 
 
 /**
  * Upload image for Gyazo.
  * @param img image
+ * @return Gyazo URL on success, or empty String if upload failed.
  */
-public void upload (PImage img) {
+public String upload (PImage img) {
   ByteArrayOutputStream out = new ByteArrayOutputStream();
   try {
     ImageIO.write((BufferedImage)img.getNative(), "PNG", out);
-  } 
+  }
   catch (IOException e) {
     e.printStackTrace();
-    return;
+    return "";
   }
 
   String image_url = "data:image/png;base64," + Base64.getEncoder().encodeToString(out.toByteArray());
@@ -75,13 +78,13 @@ public void upload (PImage img) {
   param.put("referer_url", "https://processing.org");
 
   String response = postRequest("https://upload.gyazo.com/api/upload/easy_auth", param);
-  if (response == "") return;
+  if (response == "") return "";
 
   Pattern pattern = Pattern.compile("https://gyazo\\.com/api/upload/[a-z0-9]*");
   Matcher matcher = pattern.matcher(response);
   if (!matcher.find()) {
     System.err.println("HTTP Response Exception: " + response);
-    return;
+    return "";
   }
   String url = matcher.group(0);
 
@@ -95,10 +98,14 @@ public void upload (PImage img) {
   }
   catch (URISyntaxException e) {
     e.printStackTrace();
+    return "";
   }
   catch(IOException e) {
     e.printStackTrace();
+    return "";
   }
+
+  return url;
 }
 
 
