@@ -42,7 +42,7 @@ public class Gyazo {
    * Capture and upload the window then open in default browser.
    * @return Gyazo URL on success, or empty String if upload failed.
    */
-  public String capture () {
+  static public String capture () {
     return this.upload(get());
   }
 
@@ -55,7 +55,7 @@ public class Gyazo {
    * @param h height of pixel rectangle to get
    * @return Gyazo URL on success, or empty String if upload failed.
    */
-  public String capture (int x, int y, int w, int h) {
+  static public String capture (int x, int y, int w, int h) {
     return this.upload(get(x, y, w, h));
   }
 
@@ -65,7 +65,7 @@ public class Gyazo {
    * @param img image
    * @return Gyazo URL on success, or empty String if upload failed.
    */
-  public String upload (PImage img) {
+  static public String upload (PImage img) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
       ImageIO.write((BufferedImage)img.getNative(), "PNG", out);
