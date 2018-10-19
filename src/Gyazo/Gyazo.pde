@@ -1,19 +1,3 @@
-void setup() {
-  size(800, 800);
-}
-
-void draw() {
-  if (frameCount > 3) exit();
-  background(-1);
-
-  for (int i = 0; i < 100; i++) {
-    fill(random(255), random(255), random(255));
-    rect(random(800), random(800), random(800), random(800));
-  }
-
-  println(capture());
-}
-
 // package gyazo;
 
 /**
